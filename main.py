@@ -18,7 +18,7 @@ if __name__ == '__main__':
     p3.start()
     p4.start()
     
-    p0.join()
+    # p0.join()
     p1.join()
     p2.join()
     p3.join()
