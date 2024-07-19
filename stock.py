@@ -3,8 +3,8 @@ import anonsurf_handler
 import stock_info
 
 def stock_run():   
-    api_id = 27356729
-    api_hash = "2076532de16fc82d242fcc1a012ce5f1"
+    api_id = 26915099
+    api_hash = "58296f4f25526a31f8c9c2175b73afee"
     bot_token = "6872044004:AAETNHH9kO-XnzfyeIIq1oTRNQNN4lnNr2Y"
 
 
