@@ -26,7 +26,7 @@ def channel_run():
     bot = Client("my test bot" ,
                 api_id = 26915099 ,
                 api_hash = "58296f4f25526a31f8c9c2175b73afee" , 
-                bot_token = "6872044004:AAETNHH9kO-XnzfyeIIq1oTRNQNN4lnNr2Y")
+                bot_token = "578152924:AAF9QwKqxydHJ9kToFuNqPu8kp2-Rvd6u9s")
 
 
     def get_shakhes_info():
