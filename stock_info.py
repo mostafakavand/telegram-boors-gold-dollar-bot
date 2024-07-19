@@ -33,6 +33,8 @@ def get_stock_info(symbol):
             stock_Market_Cap = soup.select_one("#content > div.symbol-information > div:nth-child(4) > div.today-information.symbol-box > div:nth-child(7) > span.num")
             if stock_end == "0":
                  return("خطا در دریافت اطلاعات.")
+            if stock_Ticker == "()":
+                 return("چنین سهامی وجود ندارد. لطفا نام سهام را با دقت وارد کنید")
 
             # Extract and print the information
             else:
