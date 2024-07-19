@@ -31,7 +31,7 @@ def get_stock_info(symbol):
             stock_Close = soup.select_one("#content > div.symbol-information > div:nth-child(4) > div.today-information.symbol-box > div:nth-child(4) > span:nth-child(2)")
             stock_Close_Percent = soup.select_one("#content > div.symbol-information > div:nth-child(4) > div.today-information.symbol-box > div:nth-child(3) > span.num.green")
             stock_Market_Cap = soup.select_one("#content > div.symbol-information > div:nth-child(4) > div.today-information.symbol-box > div:nth-child(7) > span.num")
-            if stock_end == "0":
+            if stock_Close == "0":
                  return("خطا در دریافت اطلاعات.")
             if stock_Ticker == "()":
                  return("چنین سهامی وجود ندارد. لطفا نام سهام را با دقت وارد کنید")
