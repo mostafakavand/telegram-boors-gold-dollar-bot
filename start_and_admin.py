@@ -34,8 +34,8 @@ def start_run():
         def command1(bot , message):
             first_name= message.from_user.first_name
             keyboard = [
-                    [InlineKeyboardButton("دریافت اطلاعات مشتریان", callback_data='reg_button'),
-                    InlineKeyboardButton("ارسال پیام دسته جمعی" , callback_data='send_msg')]
+                    [InlineKeyboardButton("ثبت نام", callback_data='reg_button'),
+                    InlineKeyboardButton("دریافت اطلاعات سهام مورد نظر" , callback_data='stock_info')]
                 ]     
             reply_marks = InlineKeyboardMarkup(keyboard)       
             message.reply_text(f"سلام {first_name}! به ربات خوش اومدی.", reply_markup=reply_marks)
@@ -43,6 +43,10 @@ def start_run():
         @bot.on_callback_query(filters.regex('reg_button$'))
         def say_reg(client, callback_query):
             callback_query.message.reply_text("/register")
+        
+        @bot.on_callback_query(filters.regex('stock_info$'))
+        def say_stock(client, callback_query):
+            callback_query.message.reply_text("/stock")
 
 
 
