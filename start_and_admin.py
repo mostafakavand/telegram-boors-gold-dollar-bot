@@ -5,7 +5,7 @@ import pandas as pd
 from stock import stock_run
 
 import getpass
-from telethon import TelegramClient, sync
+from telethon.sync import TelegramClient
 from telethon.errors.rpcerrorlist import SessionPasswordNeededError
 from telethon.tl.functions.contacts import ImportContactsRequest, DeleteContactsRequest
 from telethon.tl.functions.users import GetFullUserRequest
@@ -26,7 +26,7 @@ def start_run():
 
         # Allowed list of admin usernames
         admin_username = {
-            'username',
+            'mostafa13438',
         }
 
         # Definition of the start command
@@ -94,53 +94,54 @@ def start_run():
         # از اینجا به بعد
 
         @bot.on_callback_query(filters.regex('^send_msg$'))
-        async def send_customer_message(client, callback_query):
-            try:
-                phone = "+989160855428"
-                client = TelegramClient('find_chat_id', api_id, api_hash)
-                await client.connect()       
-
-                if not await client.is_user_authorized():
-                    print(12)
-                    await client.send_code_request(phone)
-                    code = input('Enter the Telegram code: ')
+        async def send_message_to_Customers(client , callback_query):
+            client = TelegramClient('find_chat_id', api_id, api_hash)
+            await client.connect()
+            if not await client.is_user_authorized():
+                await callback_query.message.reply_text("لطفا شماره تلفن خود را جهت احراز هویت وارد نمائید")
+                # await client.send_message(callback_query.message.chat.id, "Send us your phone number.")        
+                @bot.on_message(filters.text & ~filters.command(commands=["start", "help", "settings"]))
+                async def receive_phone_number(client, message):
+                    phone = message.text                    
                     try:
-                        await client.sign_in(phone, code)
-                    except SessionPasswordNeededError:
-                        password = getpass.getpass('Enter the password for the Telegram session ')
-                        await client.sign_in(password=password)
-                Chat_IDs = []
-                unavailable_numbers = []
-                available_numbers = []
-                targets = 'targets.xlsx'
+                        client = TelegramClient('find_chat_id', api_id, api_hash)
+                        await client.connect()                       
+                        await client.send_code_request(phone)
+                        await client.send_message(message.chat.id , "ما کد تایید را برایتان ارسال کردیم. لطفا تلگرام خود را بررسی کنید و کد را برای ما بفرستید")
+                        code = message.text
+                        try:
+                            await client.sign_in(phone , code)
+                        except SessionPasswordNeededError:
+                            await client.send_message(message.chat.id, "لطفا رمز تائید دو مرحله ای تلگرام خود را وارد کنید")
+                            password = message.text
+                            await client.sign_in(password= password)
+                    except Exception as e:
+                        await callback_query.message.reply_text(f"خطایی رخ داد: {e}")
+                        
+                    Chat_IDs = []
+                    unavailable_numbers = []
+                    available_numbers = []
+                    targets = 'targets.xlsx'
 
-                df = pd.read_excel(targets , usecols= ['phone_number'])
-                phone_numbers = df.values
-        
-                for phone_number in phone_numbers:
-                    contact = InputPhoneContact(client_id=0, phone=f'{phone_number}', first_name='Contacto', last_name='Temporal')
-                    result = await client(ImportContactsRequest([contact]))
-                    if result.users:
-                        user = result.users[0]
-                        user_id = user.id
-                        Chat_IDs.append(user_id)
-                        available_numbers.append(phone_number)
-
-                        await client.send_message(user_id , "سلام. این یک پیام تست است")
-                        print(f"پیام ارسال شدبه {phone_number}")
-                    
-                        await client(DeleteContactsRequest(id=[InputUser(user_id=user.id, access_hash=user.access_hash)]))
-                    else:
-                        unavailable_numbers.append(phone_number)
-                await callback_query.message.reply_text(f"اتمام عملیات")
-                
+                    df = pd.read_excel(targets , usecols= ['phone_number'])
+                    phone_numbers = df.values
             
-            
-            
+                    for phone_number in phone_numbers:
+                        contact = InputPhoneContact(client_id=0, phone=f'{phone_number}', first_name='Contacto', last_name='Temporal')
+                        result = await client(ImportContactsRequest([contact]))
+                        if result.users:
+                            user = result.users[0]
+                            user_id = user.id
+                            Chat_IDs.append(user_id)
+                            available_numbers.append(phone_number)
 
-
-            except Exception as e:
-                await callback_query.message.reply_text(f"خطایی رخ داد: {e}")
+                            await client.send_message(user_id , "سلام. این یک پیام تست است")
+                            print(f"پیام ارسال شدبه {phone_number}")
+                        
+                            await client(DeleteContactsRequest(id=[InputUser(user_id=user.id, access_hash=user.access_hash)]))
+                        else:
+                            unavailable_numbers.append(phone_number)
+                    await callback_query.message.reply_text(f"اتمام عملیات")
 
 
         bot.run()

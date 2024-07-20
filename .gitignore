@@ -1,2 +1,5 @@
 /.venv
 *.pyc
+*.session
+*.session-journal
+users.xlsx
